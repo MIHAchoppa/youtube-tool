@@ -10,12 +10,15 @@ from viral_analyzer import ViralMomentAnalyzer
 from video_editor import ViralVideoEditor
 from tts_generator import TTSGenerator
 
+# Constants
+SEPARATOR_WIDTH = 60
+
 
 def example_basic_analysis():
     """Example: Analyze transcription for viral moments."""
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     print("Example 1: Basic Viral Moment Analysis")
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     
     # Sample transcription
     transcription = """
@@ -67,9 +70,9 @@ def example_basic_analysis():
 
 def example_tts_generation(viral_moments):
     """Example: Generate TTS script from viral moments."""
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     print("Example 2: TTS Script Generation")
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     
     if not viral_moments:
         print("⚠️  No viral moments provided, skipping...")
@@ -98,9 +101,9 @@ def example_tts_generation(viral_moments):
 
 def example_text_overlays(viral_moments):
     """Example: Generate on-screen text for moments."""
-    print("\n" + "=" * 60)
+    print("\n" + "=" * SEPARATOR_WIDTH)
     print("Example 3: On-Screen Text Generation")
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     
     if not viral_moments:
         print("⚠️  No viral moments provided, skipping...")
@@ -117,8 +120,8 @@ def example_text_overlays(viral_moments):
             print(f"\nText overlays for moment {i}:")
             for overlay in overlays:
                 print(f"  - \"{overlay['text']}\"")
-                print(f"    Position: {overlay['position']}, "
-                      f"Delay: {overlay['delay']}s, "
+                print(f"    Position: {overlay['position']}, " +
+                      f"Delay: {overlay['delay']}s, " +
                       f"Duration: {overlay['duration']}s")
             
             all_overlays.append(overlays)
@@ -132,9 +135,9 @@ def example_text_overlays(viral_moments):
 
 def example_video_compilation():
     """Example: Video editing workflow (requires actual video file)."""
-    print("\n" + "=" * 60)
+    print("\n" + "=" * SEPARATOR_WIDTH)
     print("Example 4: Video Compilation")
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     
     print("\n⚠️  This example requires an actual video file.")
     print("To run a full video compilation:")
@@ -149,9 +152,9 @@ def example_video_compilation():
 
 def example_tts_audio_generation(script):
     """Example: Generate TTS audio."""
-    print("\n" + "=" * 60)
+    print("\n" + "=" * SEPARATOR_WIDTH)
     print("Example 5: TTS Audio Generation")
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     
     if not script:
         script = "This is an example of text-to-speech generation for viral videos."
@@ -162,7 +165,10 @@ def example_tts_audio_generation(script):
         print("\n🎙️ Generating TTS audio...")
         print(f"Script: {script[:100]}...")
         
-        audio_path = tts_generator.generate_tts(script, output_path="outputs/example_tts.mp3")
+        audio_path = tts_generator.generate_tts(
+            script, 
+            output_path=os.path.join('outputs', 'example_tts.mp3')
+        )
         
         if audio_path:
             print(f"\n✅ TTS audio generated: {audio_path}")
@@ -180,9 +186,9 @@ def example_tts_audio_generation(script):
 
 def main():
     """Run all examples."""
-    print("\n" + "=" * 60)
+    print("\n" + "=" * SEPARATOR_WIDTH)
     print("🎬 Viral Video Clip Generator - Examples")
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     print("\nThese examples demonstrate the core functionality")
     print("of the Viral Video Clip Generator.\n")
     
@@ -204,9 +210,9 @@ def main():
     # Example 5: TTS audio generation
     audio_path = example_tts_audio_generation(script)
     
-    print("\n" + "=" * 60)
+    print("\n" + "=" * SEPARATOR_WIDTH)
     print("✅ Examples complete!")
-    print("=" * 60)
+    print("=" * SEPARATOR_WIDTH)
     print("\nNext steps:")
     print("1. Set your GROQ_API_KEY in .env")
     print("2. Try the web interface: python app.py")

@@ -15,7 +15,7 @@ Thank you for considering contributing to this project! 🎉
 
 ### 1. Fork & Clone
 ```bash
-git clone https://github.com/YOUR_USERNAME/youtube-tool.git
+git clone https://github.com/<YOUR_USERNAME>/youtube-tool.git
 cd youtube-tool
 ```
 
