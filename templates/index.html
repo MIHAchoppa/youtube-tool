@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral Video Clip Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            background: #f0f4ff;
+            border-color: #764ba2;
+        }
+        
+        .upload-area.dragover {
+            background: #e0e7ff;
+            border-color: #764ba2;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .file-list {
+            margin-top: 15px;
+        }
+        
+        .file-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .viral-moments {
+            margin-top: 15px;
+        }
+        
+        .moment-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .moment-card h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .moment-card .score {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        
+        .moment-card .time {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .result-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+        }
+        
+        .download-link {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .download-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Viral Video Clip Generator</h1>
+        <p class="subtitle">Upload videos, analyze for viral moments, and create engaging compilations</p>
+        
+        <!-- Video Upload Section -->
+        <div class="section">
+            <h2>1. Upload Videos (Max 5)</h2>
+            <div class="upload-area" id="uploadArea">
+                <p style="font-size: 3em; margin-bottom: 10px;">📹</p>
+                <p style="font-size: 1.2em; margin-bottom: 10px;">Click or drag videos here</p>
+                <p style="color: #666;">MP4, AVI, MOV, MKV, WEBM • Max 500MB per file</p>
+                <input type="file" id="videoInput" multiple accept="video/*">
+            </div>
+            <div class="file-list" id="fileList"></div>
+            <button class="btn" onclick="uploadVideos()" id="uploadBtn" disabled>Upload Videos</button>
+        </div>
+        
+        <!-- Transcription Input Section -->
+        <div class="section">
+            <h2>2. Provide Transcription</h2>
+            <label for="transcription">Video Transcription with Timestamps (e.g., [00:00:05] text here):</label>
+            <textarea id="transcription" rows="8" placeholder="[00:00:05] Welcome to this amazing video
+[00:00:15] Today we're going to show you something incredible
+[00:00:30] Watch what happens next..."></textarea>
+            
+            <label for="visuals" style="margin-top: 15px;">Visual Descriptions (Optional):</label>
+            <textarea id="visuals" rows="5" placeholder="[00:00:05] Camera zooms in on subject
+[00:00:15] Dramatic lighting change
+[00:00:30] Surprising visual effect"></textarea>
+        </div>
+        
+        <!-- Analysis Section -->
+        <div class="section">
+            <h2>3. Analyze & Generate</h2>
+            <label for="ttsStyle">TTS Narration Style:</label>
+            <select id="ttsStyle">
+                <option value="engaging">Engaging & Upbeat</option>
+                <option value="dramatic">Dramatic & Intense</option>
+                <option value="casual">Casual & Friendly</option>
+            </select>
+            
+            <button class="btn" onclick="processComplete()" id="processBtn">
+                🚀 Analyze & Create Viral Compilation
+            </button>
+            <div id="statusArea"></div>
+        </div>
+        
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;">
+            <div class="section">
+                <h2>✨ Viral Moments Identified</h2>
+                <div id="viralMoments" class="viral-moments"></div>
+            </div>
+            
+            <div class="section">
+                <h2>📝 Generated TTS Script</h2>
+                <div id="ttsScript" style="background: white; padding: 15px; border-radius: 8px;"></div>
+            </div>
+            
+            <div class="result-section">
+                <h2 style="color: #2e7d32; margin-bottom: 10px;">🎉 Video Compilation Ready!</h2>
+                <p id="outputInfo" style="margin-bottom: 15px;"></p>
+                <a href="#" id="downloadLink" class="download-link">⬇️ Download Viral Compilation</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let uploadedFiles = [];
+        let currentVideoPath = '';
+        
+        // File upload handlers
+        const uploadArea = document.getElementById('uploadArea');
+        const videoInput = document.getElementById('videoInput');
+        const fileList = document.getElementById('fileList');
+        const uploadBtn = document.getElementById('uploadBtn');
+        
+        uploadArea.addEventListener('click', () => videoInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            videoInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        });
+        
+        videoInput.addEventListener('change', handleFileSelect);
+        
+        function handleFileSelect() {
+            const files = Array.from(videoInput.files);
+            
+            if (files.length > 5) {
+                showStatus('Maximum 5 videos allowed', 'error');
+                return;
+            }
+            
+            fileList.innerHTML = '';
+            files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span>📹 ${file.name}</span>
+                    <span>${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                `;
+                fileList.appendChild(fileItem);
+            });
+            
+            uploadBtn.disabled = files.length === 0;
+        }
+        
+        async function uploadVideos() {
+            const files = videoInput.files;
+            if (files.length === 0) return;
+            
+            const formData = new FormData();
+            for (let file of files) {
+                formData.append('videos', file);
+            }
+            
+            uploadBtn.disabled = true;
+            showStatus('Uploading videos...', 'info');
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    uploadedFiles = data.files;
+                    currentVideoPath = data.files[0].path;
+                    showStatus(`✅ ${data.message}`, 'success');
+                } else {
+                    showStatus(`❌ ${data.error}`, 'error');
+                    uploadBtn.disabled = false;
+                }
+            } catch (error) {
+                showStatus(`❌ Upload failed: ${error.message}`, 'error');
+                uploadBtn.disabled = false;
+            }
+        }
+        
+        async function processComplete() {
+            const transcription = document.getElementById('transcription').value;
+            const visuals = document.getElementById('visuals').value;
+            const ttsStyle = document.getElementById('ttsStyle').value;
+            
+            if (!transcription) {
+                showStatus('❌ Please provide transcription', 'error');
+                return;
+            }
+            
+            if (!currentVideoPath) {
+                showStatus('❌ Please upload a video first', 'error');
+                return;
+            }
+            
+            const processBtn = document.getElementById('processBtn');
+            processBtn.disabled = true;
+            
+            showStatus('🔍 Analyzing video for viral moments...', 'info');
+            
+            try {
+                const response = await fetch('/process-complete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        video_path: currentVideoPath,
+                        transcription: transcription,
+                        visuals_description: visuals,
+                        tts_style: ttsStyle,
+                        output_name: 'viral_compilation.mp4'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus('✅ Processing complete!', 'success');
+                    displayResults(data);
+                } else {
+                    showStatus(`❌ ${data.error}`, 'error');
+                    processBtn.disabled = false;
+                }
+            } catch (error) {
+                showStatus(`❌ Processing failed: ${error.message}`, 'error');
+                processBtn.disabled = false;
+            }
+        }
+        
+        function displayResults(data) {
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Display viral moments
+            const momentsContainer = document.getElementById('viralMoments');
+            momentsContainer.innerHTML = '';
+            
+            data.viral_moments.forEach((moment, index) => {
+                const card = document.createElement('div');
+                card.className = 'moment-card';
+                card.innerHTML = `
+                    <h3>Moment ${index + 1}</h3>
+                    <span class="score">Score: ${moment.score}/100</span>
+                    <p class="time">⏱️ ${moment.start_time.toFixed(1)}s - ${moment.end_time.toFixed(1)}s</p>
+                    <p style="margin-top: 10px;"><strong>Why it's viral:</strong> ${moment.reason}</p>
+                    ${moment.hook ? `<p style="margin-top: 5px; font-style: italic;">"${moment.hook}"</p>` : ''}
+                `;
+                momentsContainer.appendChild(card);
+            });
+            
+            // Display TTS script
+            document.getElementById('ttsScript').textContent = data.tts_script;
+            
+            // Display download link
+            document.getElementById('outputInfo').textContent = 
+                `Your viral compilation is ready with ${data.viral_moments.length} viral moments, ` +
+                `transitions, on-screen text, and TTS narration!`;
+            
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = data.download_url;
+            
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showStatus(message, type) {
+            const statusArea = document.getElementById('statusArea');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            
+            if (type === 'info' && message.includes('...')) {
+                statusDiv.innerHTML = `<span class="loading"></span>${message}`;
+            } else {
+                statusDiv.textContent = message;
+            }
+            
+            statusArea.innerHTML = '';
+            statusArea.appendChild(statusDiv);
+        }
+    </script>
+</body>
+</html>
